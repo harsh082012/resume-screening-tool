@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Screening… — ScreeningBench{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">In progress</p>
+  <h1>Scoring your candidates&hellip;</h1>
+  <p class="hero-sub">Each resume is being evaluated against the job description. You can leave this page open &mdash; it updates on its own and will show the ranked results automatically when finished.</p>
+</section>
+
+<div class="intake-panel">
+  <div class="screening-progress">
+    <div class="screening-count">
+      <span id="progress-count">{{ done }}</span> of <span id="progress-total">{{ total }}</span> resumes scored
+    </div>
+    <div class="screening-track" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+      <div class="screening-fill" id="progress-fill"></div>
+    </div>
+    <p class="screening-file" id="progress-file">Starting&hellip;</p>
+  </div>
+</div>
+
+<style>
+  .screening-progress { padding: 8px 4px; }
+  .screening-count { font-weight: 600; margin-bottom: 12px; }
+  .screening-track {
+    width: 100%; height: 12px; border-radius: 999px;
+    background: rgba(0,0,0,0.08); overflow: hidden;
+  }
+  .screening-fill {
+    height: 100%; width: 0%; border-radius: 999px;
+    background: #2f6f4e; transition: width 0.4s ease;
+  }
+  .screening-file {
+    margin-top: 12px; font-size: 0.9rem; opacity: 0.7;
+    font-family: "IBM Plex Mono", monospace;
+  }
+</style>
+
+<script>
+  const runId = "{{ run_id }}";
+  const countEl = document.getElementById('progress-count');
+  const totalEl = document.getElementById('progress-total');
+  const fillEl  = document.getElementById('progress-fill');
+  const fileEl  = document.getElementById('progress-file');
+
+  async function poll() {
+    try {
+      const res = await fetch(`/status/${runId}`);
+      if (res.ok) {
+        const data = await res.json();
+        countEl.textContent = data.done;
+        totalEl.textContent = data.total;
+        const pct = data.total ? Math.round((data.done / data.total) * 100) : 0;
+        fillEl.style.width = pct + '%';
+        if (data.last_file) fileEl.textContent = 'Last scored: ' + data.last_file;
+
+        if (data.status === 'done' || data.status === 'failed') {
+          // Reload: /results now renders the finished table (or flashes the error).
+          window.location.reload();
+          return;
+        }
+      }
+    } catch (e) {
+      /* transient network hiccup -- keep polling */
+    }
+    setTimeout(poll, 1500);
+  }
+
+  poll();
+</script>
+{% endblock %}

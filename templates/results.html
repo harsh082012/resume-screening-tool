@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Results — ScreeningBench{% endblock %}
+
+{% block content %}
+<section class="results-header">
+  <div>
+    <p class="eyebrow">Results</p>
+    <h1>{{ candidates|length }} candidate{{ 's' if candidates|length != 1 else '' }} ranked</h1>
+  </div>
+  <div class="results-actions">
+    <a href="{{ url_for('download_csv', run_id=run_id) }}" class="btn-secondary">Download CSV</a>
+    <a href="{{ url_for('index') }}" class="btn-secondary">New screening</a>
+  </div>
+</section>
+
+{% if errors %}
+<div class="warning-box">
+  <strong>{{ errors|length }} file{{ 's' if errors|length != 1 else '' }} skipped:</strong>
+  <ul>
+    {% for err in errors %}<li>{{ err }}</li>{% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<div class="leaderboard">
+  {% for c in candidates %}
+  {% set tier = 'strong' if c.ats_score >= 75 else ('moderate' if c.ats_score >= 50 else 'weak') %}
+  <article class="candidate-card tier-{{ tier }}" data-index="{{ loop.index }}">
+    <button class="candidate-summary" type="button" aria-expanded="false">
+      <span class="rank-badge">{{ '%02d'|format(c.rank) }}</span>
+
+      <span class="candidate-identity">
+        <span class="candidate-name">{{ c.candidate_name }}</span>
+        <span class="candidate-file">{{ c.source_filename }}</span>
+      </span>
+
+      <span class="meter-block">
+        <span class="meter" role="img" aria-label="ATS score {{ c.ats_score }} out of 100">
+          <span class="meter-track">
+            <span class="meter-fill" style="--fill: {{ c.ats_score }}%;"></span>
+            <span class="meter-ticks" aria-hidden="true"></span>
+          </span>
+        </span>
+        <span class="meter-value">{{ c.ats_score }}<span class="meter-value-unit">/100</span></span>
+      </span>
+
+      <span class="chevron" aria-hidden="true">&#8964;</span>
+    </button>
+
+    <div class="candidate-detail">
+      <div class="detail-grid">
+        <div class="sub-meter">
+          <span class="sub-meter-label">Skills match</span>
+          <span class="sub-meter-track"><span class="sub-meter-fill" style="--fill: {{ c.skills_match_score }}%;"></span></span>
+          <span class="sub-meter-value">{{ c.skills_match_score }}</span>
+        </div>
+        <div class="sub-meter">
+          <span class="sub-meter-label">Experience match</span>
+          <span class="sub-meter-track"><span class="sub-meter-fill" style="--fill: {{ c.experience_match_score }}%;"></span></span>
+          <span class="sub-meter-value">{{ c.experience_match_score }}</span>
+        </div>
+        <div class="sub-meter">
+          <span class="sub-meter-label">Education match</span>
+          <span class="sub-meter-track"><span class="sub-meter-fill" style="--fill: {{ c.education_match_score }}%;"></span></span>
+          <span class="sub-meter-value">{{ c.education_match_score }}</span>
+        </div>
+        <div class="sub-meter sub-meter-text">
+          <span class="sub-meter-label">Experience (est.)</span>
+          <span class="sub-meter-text-value">{{ c.years_experience_estimate }}</span>
+        </div>
+      </div>
+
+      <p class="candidate-summary-text">{{ c.summary }}</p>
+
+      <div class="tag-columns">
+        <div class="tag-column">
+          <h3 class="tag-heading tag-heading-match">Matched skills</h3>
+          <div class="tag-row">
+            {% for skill in c.matched_skills %}<span class="tag tag-match">{{ skill }}</span>{% else %}<span class="tag-empty">None identified</span>{% endfor %}
+          </div>
+        </div>
+        <div class="tag-column">
+          <h3 class="tag-heading tag-heading-missing">Missing skills</h3>
+          <div class="tag-row">
+            {% for skill in c.missing_skills %}<span class="tag tag-missing">{{ skill }}</span>{% else %}<span class="tag-empty">None &mdash; strong coverage</span>{% endfor %}
+          </div>
+        </div>
+      </div>
+
+      {% if c.improvement_suggestions %}
+      <div class="suggestions-box">
+        <h3 class="tag-heading">Suggestions to strengthen this resume for this role</h3>
+        <ul class="suggestions-list">
+          {% for s in c.improvement_suggestions %}<li>{{ s }}</li>{% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+<script>
+  document.querySelectorAll('.candidate-summary').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.candidate-card');
+      const isOpen = card.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  });
+  // Open the top candidate by default
+  const first = document.querySelector('.candidate-card');
+  if (first) {
+    first.classList.add('open');
+    first.querySelector('.candidate-summary').setAttribute('aria-expanded', 'true');
+  }
+</script>
+{% endblock %}

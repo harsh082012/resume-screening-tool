@@ -1,0 +1,29 @@
+Priya Sharma
+Backend Software Engineer
+Email: priya.sharma.dev@example.com | Phone: +91-98XXXXXX10
+
+Summary:
+Backend engineer with 4 years of experience building and scaling RESTful APIs
+in Python. Strong background in relational database design, containerized
+deployments, and CI/CD automation.
+
+Experience:
+Backend Engineer, Fintech Solutions Pvt Ltd (2022 - Present)
+- Designed and maintained REST APIs using Flask serving 50k+ daily active users
+- Migrated legacy MySQL schema to PostgreSQL, improving query performance by 35%
+- Built CI/CD pipelines using GitHub Actions, reducing deployment time from 40 to 8 minutes
+- Containerized services with Docker and deployed to AWS ECS
+- Wrote unit and integration tests achieving 85% code coverage using pytest
+
+Software Engineer, DataWorks Technologies (2020 - 2022)
+- Developed internal microservices using Django REST Framework
+- Integrated third-party payment gateway APIs (Razorpay, Stripe)
+- Collaborated with frontend team to design API contracts
+- Used Celery with RabbitMQ for async task processing
+
+Skills:
+Python, Flask, Django, REST APIs, PostgreSQL, MySQL, Docker, AWS (ECS, S3, RDS),
+Git, GitHub Actions, Celery, RabbitMQ, pytest, Kubernetes (basic)
+
+Education:
+B.Tech in Computer Science, National Institute of Technology (2016 - 2020)

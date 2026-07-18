@@ -1,0 +1,13 @@
+
+    .env
+!uploads/resumes/.gitkeep
+*.pyc
+.DS_Store
+.env
+.env.slack
+.venv/
+__pycache__/
+outputs/*.csv
+uploads/
+uploads/resumes/*
+venv/

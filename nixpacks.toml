@@ -1,0 +1,10 @@
+# nixpacks.toml
+# Railway (and any nixpacks-based host) reads this to install SYSTEM packages.
+# pytesseract/pdf2image are just Python wrappers -- they need these actual
+# binaries present, or OCR silently falls back to "unavailable" at runtime.
+#
+# Without this file, OCR works on your Mac (where you brew-installed it) but
+# NOT on the deployed Railway app. This is the #1 thing people forget.
+
+[phases.setup]
+aptPkgs = ["tesseract-ocr", "poppler-utils"]

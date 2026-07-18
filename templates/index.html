@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}New Screening — ScreeningBench{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Intake</p>
+  <h1>Measure every resume against one job description.</h1>
+  <p class="hero-sub">Upload a JD and a batch of resumes. Each candidate gets an ATS fit score, a skills breakdown, and specific suggestions for closing the gap &mdash; ranked, in one pass.</p>
+</section>
+
+<form class="intake-form" action="{{ url_for('screen') }}" method="post" enctype="multipart/form-data" id="screening-form">
+
+  <div class="intake-panel">
+    <div class="panel-label">
+      <span class="step-index">01</span>
+      <div>
+        <h2>Job description</h2>
+        <p>Paste the JD text, or upload a file instead.</p>
+      </div>
+    </div>
+
+    <textarea
+      name="jd_text"
+      id="jd_text"
+      rows="10"
+      placeholder="Paste the full job description here — responsibilities, required skills, experience level, qualifications..."
+    ></textarea>
+
+    <div class="or-divider"><span>or upload a file</span></div>
+
+    <label class="file-drop" for="jd_file">
+      <input type="file" name="jd_file" id="jd_file" accept=".pdf,.docx,.txt,.png,.jpg,.jpeg,.webp,.tiff,.bmp">
+      <span class="file-drop-label" id="jd-file-label">Choose a PDF, DOCX, TXT, or image file</span>
+    </label>
+  </div>
+
+  <div class="intake-panel">
+    <div class="panel-label">
+      <span class="step-index">02</span>
+      <div>
+        <h2>Candidate resumes</h2>
+        <p>Upload as many as you like — this is your candidate pool.</p>
+      </div>
+    </div>
+
+    <label class="file-drop file-drop-large" for="resumes">
+      <input type="file" name="resumes" id="resumes" accept=".pdf,.docx,.txt,.png,.jpg,.jpeg,.webp,.tiff,.bmp" multiple>
+      <span class="file-drop-icon" aria-hidden="true">&#8593;</span>
+      <span class="file-drop-label" id="resumes-file-label">Drop resume files here, or click to browse</span>
+      <span class="file-drop-hint">Accepted: PDF, DOCX, TXT, and images (PNG, JPG) &middot; multiple files supported</span>
+    </label>
+
+    <ul class="file-list" id="file-list"></ul>
+  </div>
+
+  <div class="submit-bar">
+    <button type="submit" id="submit-btn">Run screening</button>
+    <span class="submit-hint">Typically a few seconds per resume.</span>
+  </div>
+</form>
+
+<div class="loading-overlay" id="loading-overlay" hidden>
+  <div class="loading-card">
+    <div class="meter-spin" aria-hidden="true"></div>
+    <p id="loading-text">Reading resumes and scoring against the job description&hellip;</p>
+  </div>
+</div>
+
+<script>
+  const jdFileInput = document.getElementById('jd_file');
+  const jdFileLabel = document.getElementById('jd-file-label');
+  jdFileInput.addEventListener('change', () => {
+    jdFileLabel.textContent = jdFileInput.files.length
+      ? jdFileInput.files[0].name
+      : 'Choose a PDF, DOCX, TXT, or image file';
+  });
+
+  const resumesInput = document.getElementById('resumes');
+  const resumesLabel = document.getElementById('resumes-file-label');
+  const fileList = document.getElementById('file-list');
+  resumesInput.addEventListener('change', () => {
+    fileList.innerHTML = '';
+    const files = Array.from(resumesInput.files);
+    resumesLabel.textContent = files.length
+      ? `${files.length} file${files.length > 1 ? 's' : ''} selected`
+      : 'Drop resume files here, or click to browse';
+    files.forEach(f => {
+      const li = document.createElement('li');
+      li.textContent = f.name;
+      fileList.appendChild(li);
+    });
+  });
+
+  const form = document.getElementById('screening-form');
+  const overlay = document.getElementById('loading-overlay');
+  const loadingText = document.getElementById('loading-text');
+  form.addEventListener('submit', (e) => {
+    const hasJd = document.getElementById('jd_text').value.trim() || jdFileInput.files.length;
+    const hasResumes = resumesInput.files.length;
+    if (!hasJd || !hasResumes) return; // let normal validation/flash handle it
+    const count = resumesInput.files.length;
+    loadingText.textContent = `Scoring ${count} resume${count > 1 ? 's' : ''} against the job description\u2026`;
+    overlay.hidden = false;
+    document.getElementById('submit-btn').disabled = true;
+  });
+</script>
+{% endblock %}

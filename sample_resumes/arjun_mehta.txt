@@ -1,0 +1,26 @@
+Arjun Mehta
+Software Developer
+Email: arjun.mehta.code@example.com
+
+Summary:
+Software developer with 2 years of experience primarily in frontend
+development, with some exposure to backend scripting and databases.
+
+Experience:
+Frontend Developer, WebCraft Studio (2023 - Present)
+- Built responsive UIs using React and Tailwind CSS
+- Wrote small Python scripts for data cleaning and internal reporting
+- Worked with a MySQL database to fetch data for dashboards
+- Used Git for version control and participated in code reviews
+
+Junior Developer, StartUp Nest (2022 - 2023)
+- Assisted in building a basic Flask API for an internal admin tool
+- Fixed bugs and wrote small features under senior developer guidance
+- Basic exposure to Docker for local development environments
+
+Skills:
+JavaScript, React, HTML/CSS, Python (basic), Flask (basic), MySQL (basic),
+Git, Tailwind CSS
+
+Education:
+B.Sc in Information Technology, Mumbai University (2019 - 2022)
