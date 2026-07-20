@@ -57,7 +57,7 @@ def _call_gemini(prompt: str) -> str:
     )
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.2, "responseMimeType": "application/json"},
+        "generationConfig": {"temperature": 0, "responseMimeType": "application/json"},
     }
     resp = requests.post(url, json=payload, timeout=60)
     if resp.status_code != 200:
@@ -136,7 +136,13 @@ def _call_openrouter(prompt: str, max_retries: int = 3) -> str:
             json={
                 "model": OPENROUTER_MODEL,
                 "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.2,
+                # temperature 0 = greedy decoding: the model picks the most
+                # likely token every time, so identical inputs give identical
+                # (or near-identical) scores instead of varying run-to-run.
+                "temperature": 0,
+                # seed helps providers that support it return reproducible
+                # output; harmless for those that ignore it.
+                "seed": 42,
             },
             timeout=60,
         )
