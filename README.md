@@ -1,7 +1,5 @@
 # ScreeningBench — Resume Screening AI Tool
 
-**🔗 Live deployment:** https://resume-screening-tool-production.up.railway.app
-*(Deployed via the Railway CLI — no GitHub repository involved, per project requirements.)*
 
 I built this as a working, end-to-end AI tool that extracts resumes from a
 folder (or via upload), compares each one against a job description using an
